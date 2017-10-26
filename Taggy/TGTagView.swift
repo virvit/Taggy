@@ -10,9 +10,33 @@ import UIKit
 import QuartzCore
 import CoreText
 
-class TGTagView: UIControl {
+@IBDesignable class TGTagView: UIControl {
+    @IBInspectable var tagName: String = "" {
+		didSet { setNeedsDisplay() }
+	}
 
-    func drawRemoveButton(rect: CGRect, context: CGContext) {
+    @IBInspectable var tagUnit: String = "" {
+		didSet { setNeedsDisplay() }
+	}
+
+    @IBInspectable var tagDescription: String = "" {
+		didSet { setNeedsDisplay() }
+	}
+
+    @IBInspectable var tagValue: String = "" {
+		didSet { setNeedsDisplay() }
+	}
+
+    @IBInspectable var tagDefaultValue: String = "" {
+		didSet { setNeedsDisplay() }
+	}
+
+	@IBInspectable var tagColor: UIColor {
+		didSet { setNeedsDisplay() }
+	}
+
+                                
+	func drawRemoveButton(rect: CGRect, context: CGContext) {
         context.addEllipse(in: rect)
         context.setFillColor(UIColor.red.cgColor)
         context.closePath()
