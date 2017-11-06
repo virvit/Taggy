@@ -35,7 +35,6 @@ import CoreText
 		didSet { setNeedsDisplay() }
 	}
 
-                                
 	func drawRemoveButton(rect: CGRect, context: CGContext) {
         
         // Draw circle
@@ -187,6 +186,4 @@ import CoreText
         
         ctx.restoreGState()
     }
-    
-
 }
