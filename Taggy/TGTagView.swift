@@ -10,42 +10,142 @@ import UIKit
 import QuartzCore
 import CoreText
 
-@IBDesignable class TGTagView: UIControl {
-    @IBInspectable var tagName: String = "Tag" {
+protocol RemoveTagDelegate {
+    func removeTagButtonClicked(tagView: TGTagView) -> Void
+}
+
+@IBDesignable open class TGTagView: UIButton, UIGestureRecognizerDelegate
+{
+    private var removeButtonSize: CGFloat = CGFloat()
+    private var removeButtonRect: CGRect = CGRect()
+    
+    var delegate: RemoveTagDelegate?
+    
+    @IBInspectable public var tagName: String = "Tag" {
+        didSet {
+            setupView()
+            setNeedsDisplay()
+        }
+	}
+
+    @IBInspectable public var tagUnit: String = "" {
+        didSet {
+            setupView()
+            setNeedsDisplay()
+        }
+	}
+
+    @IBInspectable public  var tagDescription: String = "" {
 		didSet { setNeedsDisplay() }
 	}
 
-    @IBInspectable var tagUnit: String = "" {
+    @IBInspectable public var tagValue: String = "" {
+        didSet {
+            setupView()
+            setNeedsDisplay()
+        }
+	}
+
+    @IBInspectable public var tagDefaultValue: String = "" {
 		didSet { setNeedsDisplay() }
 	}
 
-    @IBInspectable var tagDescription: String = "" {
+	@IBInspectable public var tagColor: UIColor = UIColor.black {
 		didSet { setNeedsDisplay() }
 	}
 
-    @IBInspectable var tagValue: String = "" {
-		didSet { setNeedsDisplay() }
-	}
+    @IBInspectable public var tagNameFont: UIFont = UIFont(name: "Times New Roman", size: 12)! {
+        didSet {
+            setupView()
+            setNeedsDisplay()
+        }
+    }
 
-    @IBInspectable var tagDefaultValue: String = "" {
-		didSet { setNeedsDisplay() }
-	}
+    @IBInspectable public var tagValueFont: UIFont = UIFont(name: "Times New Roman", size: 10)! {
+        didSet {
+            setupView()
+            setNeedsDisplay()
+        }
+    }
 
-	@IBInspectable var tagColor: UIColor = UIColor.black {
-		didSet { setNeedsDisplay() }
-	}
+    @IBInspectable public var cornerRadius: CGFloat = 10 {
+        didSet { setNeedsDisplay() }
+    }
 
-	func drawRemoveButton(rect: CGRect, context: CGContext) {
+    @IBInspectable public var controlsMargin: CGFloat = 5 {
+        didSet { setNeedsDisplay() }
+    }
+    
+    open override func prepareForInterfaceBuilder() {
+        tagName = "My tag"
+        tagValue = "10.3"
+        tagUnit = "Miles"
+    }
+    
+    private func drawTagShape(rect: CGRect, context: CGContext) {
+        // Draw shape (rounded rectangle)
+//        let centerX: CGFloat = (self.frame.width - rect.width) / 2
+//        let centerY: CGFloat = (self.frame.height - rect.height) / 2
+
+        //let rect = CGRect(x: centerX, y: centerY, width: rect.width, height: rect.height)
+        
+        let clipPath: CGPath = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius).cgPath
+        
+        context.addPath(clipPath)
+        context.setFillColor(UIColor(red: CGFloat(57.0/255.0),
+                                     green: CGFloat(181.0/255.0),
+                                     blue: CGFloat(74.0/255.0),
+                                     alpha: 1.0).cgColor)
+        context.closePath()
+        context.fillPath()
+
+    }
+    
+    private func drawTagName(rect: CGRect, context: CGContext) {
+        let aStringParams: [NSAttributedStringKey: Any] = [
+            NSAttributedStringKey.foregroundColor: UIColor.white,
+            NSAttributedStringKey.font: tagNameFont
+        ]
+        
+        let tagNameString = NSAttributedString(string: tagName, attributes: aStringParams)
+        let point: CGPoint = CGPoint(x: rect.minX, y: rect.height / 2 - tagNameFont.pointSize / 2)
+        tagNameString.draw(at: point)
+    }
+    
+    private func drawTagValue(rect: CGRect, context: CGContext) {
+        // Draw units under value
+        // Value
+        // Units
+        
+        let aStringParams: [NSAttributedStringKey: Any] = [
+            NSAttributedStringKey.foregroundColor: UIColor.orange,
+            NSAttributedStringKey.font: tagValueFont
+        ]
+
+        var yPoint = CGFloat(0)
+
+        let valueString = NSAttributedString(string: self.tagValue, attributes: aStringParams)
+        valueString.draw(at: CGPoint(x: rect.minX, y: yPoint))
+        
+        if (tagUnit != "") {
+            yPoint += tagValueFont.pointSize
+            let unitString = NSAttributedString(string: tagUnit, attributes: aStringParams)
+            unitString.draw(at: CGPoint(x: rect.minX, y: yPoint))
+        }
+
+    }
+    
+    private func drawRemoveButton(rect: CGRect, context: CGContext) {
         
         // Draw circle
         context.addEllipse(in: rect)
         context.setFillColor(UIColor(red: CGFloat(0.0/255.0),
-                                 green: CGFloat(166.0/255.0),
-                                 blue: CGFloat(81.0/255.0),
-                                 alpha: 1.0).cgColor)
+                                     green: CGFloat(166.0/255.0),
+                                     blue: CGFloat(81.0/255.0),
+                                     alpha: 1.0).cgColor)
         context.closePath()
         context.fillPath()
-
+        
         // Draw cross lines inside the circle
         let path = UIBezierPath()
         
@@ -54,9 +154,9 @@ import CoreText
         path.lineCapStyle = .round
         
         let minusRectFrame = CGRect(x: rect.minX + minusRectWidth,
-                               y: rect.minY + minusRectWidth,
-                               width: rect.width - minusRectWidth * 2,
-                               height: rect.height - minusRectWidth * 2)
+                                    y: rect.minY + minusRectWidth,
+                                    width: rect.width - minusRectWidth * 2,
+                                    height: rect.height - minusRectWidth * 2)
         
         // Vertical
         path.move(to: CGPoint(x: minusRectFrame.minX + minusRectFrame.width / 2, y: minusRectFrame.minY))
@@ -64,7 +164,7 @@ import CoreText
         // Horizontal
         path.move(to: CGPoint(x: minusRectFrame.minX, y: minusRectFrame.minY + minusRectFrame.height / 2 ))
         path.addLine(to: CGPoint(x: minusRectFrame.maxX, y: minusRectFrame.minY + minusRectFrame.height / 2))
-
+        
         UIColor.white.setStroke()
         
         // Rotate
@@ -74,116 +174,129 @@ import CoreText
         path.stroke()
     }
     
-    func drawTagName(rect: CGRect, context: CGContext) {
-        let textFont: UIFont = UIFont(name: "Times New Roman", size: floor(rect.height / 2))!
-        let aStringParams: [NSAttributedStringKey: Any] = [
-            NSAttributedStringKey.foregroundColor: UIColor.white,
-            NSAttributedStringKey.font: textFont
-        ]
-        
-        let attrString = NSAttributedString(string: tagName, attributes: aStringParams)
-/*
-        // Flip the coordinate system
-        context.textMatrix = .identity
-        //context.translateBy(x: 0, y: bounds.size.height)
-        context.translateBy(x: rect.origin.x, y: rect.origin.y)
-        context.scaleBy(x: 1.0, y: -1.0)
-        context.translateBy(x: 0, y: -( rect.origin.y + rect.size.height ) );
-        
-        //context.stroke(rect)
-        
-//        let textRect = CGRect(x: rect.minX,
-//                              y: rect.minY,
-//                              width: attrString.size().width,
-//                              height: attrString.size().height)
-
-        let textRect = CGRect(x: 0,
-                              y: 50,
-                              width: 150,
-                              height: 120)
-
-        //context.stroke(textRect)
-        
-        let path = CGMutablePath()
-        path.addRect(rect)
-        
-        let framesetter = CTFramesetterCreateWithAttributedString(attrString as CFAttributedString)
-        
-        //let frame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, attrString.length), path, nil)
-        let frame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, 0), path, nil)
-        
-        CTFrameDraw(frame, context)
-*/
-        let point: CGPoint = CGPoint(x: 15.0, y: rect.height / 2 - textFont.pointSize / 2)
-        attrString.draw(at: point)
-    }
-    
-    func drawValue(rect: CGRect, context: CGContext) {
-        let textFont: UIFont = UIFont(name: "Times New Roman", size: floor(rect.height / 2))!
-        let boldFont = UIFont(descriptor: textFont.fontDescriptor.withSymbolicTraits(.traitBold)!, size: textFont.pointSize)
-        let aStringParams: [NSAttributedStringKey: Any] = [
-            NSAttributedStringKey.foregroundColor: UIColor.orange,
-            NSAttributedStringKey.font: boldFont
-        ]
-        
-        let attrString = NSAttributedString(string: self.tagValue, attributes: aStringParams)
-
-        let point: CGPoint = CGPoint(x: rect.width / 2, y: rect.height / 2 - boldFont.pointSize / 2)
-        print(rect.height)
-        attrString.draw(at: point)
-    }
-    
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        let rectWidth: CGFloat = rect.width
-        let rectHeight: CGFloat = rect.height
-        let cornerRadius: CGFloat = rect.height / 3
-        let controlsMargin: CGFloat = rectHeight * 0.1
-        
-        let centerX: CGFloat = (self.frame.width - rectWidth) / 2
-        let centerY: CGFloat = (self.frame.height - rectHeight) / 2
-
-        let ctx: CGContext = UIGraphicsGetCurrentContext()!
-        ctx.saveGState()
-
-        tagValue = "10.3"
+    override open func draw(_ rect: CGRect) {
+        let context: CGContext = UIGraphicsGetCurrentContext()!
+        context.saveGState()
 
         // Drawing code
-        // 50% - label
+        // 60% - label
         // 30% - value, unit, comments
-        // 20% - remove button
+        // 10% - remove button
         
-        // Draw shape (rounded rectangle)
-        let rect = CGRect(x: centerX, y: centerY, width: rectWidth, height: rectHeight)
-        
-        let clipPath: CGPath = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius).cgPath
-        
-        ctx.addPath(clipPath)
-        ctx.setFillColor(UIColor(red: CGFloat(57.0/255.0),
-                                 green: CGFloat(181.0/255.0),
-                                 blue: CGFloat(74.0/255.0),
-                                 alpha: 1.0).cgColor)
-        ctx.closePath()
-        ctx.fillPath()
-        drawValue(rect: rect, context: ctx)
+        drawTagShape(rect: rect, context: context)
+
+        if tagValue != "" {
+            let tagNameRect = CGRect(x: rect.minX + controlsMargin,
+                                     y: controlsMargin,
+                                     width: getTagNameWidth(),
+                                     height: self.frame.height - controlsMargin * 2)
+
+            let tagValueRect = CGRect(x: tagNameRect.maxX + controlsMargin,
+                                     y: controlsMargin,
+                                     width: getTagValueWidth(),
+                                     height: self.frame.height - controlsMargin * 2)
+            
+            let bpath:UIBezierPath = UIBezierPath(rect: tagNameRect)
+            
+            UIColor.yellow.set()
+            bpath.stroke()
+            
+            drawTagName(rect: tagNameRect, context: context)
+            drawTagValue(rect: tagValueRect, context: context)
+        }
+        else {
+            let tagNameRect = CGRect(x: rect.minX + controlsMargin,
+                                     y: controlsMargin,
+                                     width: getTagNameWidth(),
+                                     height: self.frame.height - controlsMargin * 2)
+            drawTagName(rect: tagNameRect, context: context)
+        }
+
         // Draw remove button
-        
-        let removeButtonSize: CGFloat = rectHeight - controlsMargin * 2
-        let removeButtonRect: CGRect = CGRect(x: rectWidth - controlsMargin - removeButtonSize,
+        removeButtonRect = CGRect(x: self.frame.width - controlsMargin - removeButtonSize,
                                               y: controlsMargin,
                                               width: removeButtonSize,
                                               height: removeButtonSize)
-        drawRemoveButton(rect: removeButtonRect, context: ctx)
         
-        let tagNameRect = CGRect(x: cornerRadius,
-                                 y: controlsMargin,
-                                 width: rect.width / 2,
-                                 height: rect.height - controlsMargin * 2)
+        drawRemoveButton(rect: removeButtonRect, context: context)
         
-        drawTagName(rect: tagNameRect, context: ctx)
+        context.restoreGState()
+    }
+    
+    private func getTagNameWidth() -> CGFloat {
+        return tagName.size(withAttributes: [NSAttributedStringKey.font: tagNameFont]).width
+    }
+    
+    private func getTagValueWidth() -> CGFloat {
+        var tagValueSize = tagValue.size(withAttributes: [NSAttributedStringKey.font: tagValueFont])
+        let tagUnitsSize = tagUnit.size(withAttributes: [NSAttributedStringKey.font: tagValueFont])
         
+        return  max(tagValueSize.width, tagUnitsSize.width)
+    }
+
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        setupView()
+    }
+
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupView()
+    }
+    
+    public init(tagName: String) {
+        super.init(frame: CGRect.zero)
+        self.tagName = tagName
         
-        ctx.restoreGState()
+        setupView()
+    }
+    
+    override open var intrinsicContentSize: CGSize {
+        var frameSize: CGSize = CGSize()
+        
+        let tagNameSize = tagName.size(withAttributes: [NSAttributedStringKey.font: tagNameFont])
+        var tagValueSize = tagValue.size(withAttributes: [NSAttributedStringKey.font: tagValueFont])
+        let tagUnitsSize = tagUnit.size(withAttributes: [NSAttributedStringKey.font: tagValueFont])
+        
+        tagValueSize.width = max(tagValueSize.width, tagUnitsSize.width)
+        tagValueSize.height = tagValueSize.height + tagUnitsSize.height
+
+        let maxHeight = max(tagNameSize.height, tagValueSize.height)
+
+        if cornerRadius == 0 {
+            cornerRadius = maxHeight / 3
+        }
+        
+        if controlsMargin == 0 {
+            controlsMargin = maxHeight * 0.1
+        }
+        
+        frameSize.height = controlsMargin * 2 + maxHeight
+        removeButtonSize = maxHeight
+
+        frameSize.height = controlsMargin * 2 + max(tagNameSize.height, tagValueSize.height)
+        frameSize.width = controlsMargin * 4 + tagNameSize.width + tagValueSize.width + removeButtonSize
+
+        return frameSize
+    }
+    
+    private func setupView() {
+        frame.size = intrinsicContentSize
+        
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.clickDeleteButton))
+        gestureRecognizer.delegate = self
+        self.addGestureRecognizer(gestureRecognizer)
+    }
+    
+    @objc func clickDeleteButton(_ gestureRecognizer: UIGestureRecognizer ) {
+        let tapPoint: CGPoint = gestureRecognizer.location(in: self)
+        
+        if (removeButtonRect.contains(tapPoint)) {
+            print("delete")
+            delegate?.removeTagButtonClicked(tagView: self)
+        }
+        else {
+            print("not delete")
+        }
     }
 }

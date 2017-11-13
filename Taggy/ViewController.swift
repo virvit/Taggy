@@ -8,8 +8,19 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController:    UIViewController
+{
+    //var arrayOfTags: [TGTagView] = []
 
+    @IBOutlet weak var tagList: TGTagListView!
+    
+    @IBOutlet weak var tagName: UITextField!
+    @IBAction func addtag(_ sender: UIButton) {
+        tagList.addTagView(tag: TGTagView(tagName: tagName.text!))
+        
+        //arrayOfTags.append(tag)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -22,4 +33,3 @@ class ViewController: UIViewController {
 
 
 }
-
