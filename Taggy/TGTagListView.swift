@@ -8,7 +8,7 @@
 
 import UIKit
 
-@IBDesignable open class TGTagListView: UIView, RemoveTagDelegate {
+@IBDesignable open class TGTagListView: UIView {
     
     private var arrayOfTags: [TGTagView] = []
 
@@ -18,7 +18,7 @@ import UIKit
         }
     }
 
-    func removeTagButtonClicked(tagView: TGTagView) {
+    public func removeTag(tagView: TGTagView) {
         let i: Int = arrayOfTags.index(of: tagView)!
         arrayOfTags.remove(at: i)
         
@@ -105,14 +105,11 @@ import UIKit
     
     open func addTagView(tag: TGTagView) {
         arrayOfTags.append(tag)
-        tag.delegate = self
         
         rearrangeViews()
     }
     
     open override func prepareForInterfaceBuilder() {
-        
-        var rowView1 = UIView()
         let demoTag1 = TGTagView()
         demoTag1.tagName = "Welcome"
         arrayOfTags.append(demoTag1)
@@ -123,7 +120,6 @@ import UIKit
         demoTag2.tagUnit = "Miles"
         arrayOfTags.append(demoTag2)
 
-        var rowView2 = UIView()
         let demoTag3 = TGTagView()
         demoTag3.tagName = "Welcome 3"
         arrayOfTags.append(demoTag3)

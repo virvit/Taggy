@@ -228,7 +228,7 @@ protocol RemoveTagDelegate {
     }
     
     private func getTagValueWidth() -> CGFloat {
-        var tagValueSize = tagValue.size(withAttributes: [NSAttributedStringKey.font: tagValueFont])
+        let tagValueSize = tagValue.size(withAttributes: [NSAttributedStringKey.font: tagValueFont])
         let tagUnitsSize = tagUnit.size(withAttributes: [NSAttributedStringKey.font: tagValueFont])
         
         return  max(tagValueSize.width, tagUnitsSize.width)
@@ -283,20 +283,20 @@ protocol RemoveTagDelegate {
     private func setupView() {
         frame.size = intrinsicContentSize
         
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.clickDeleteButton))
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.clickTag))
         gestureRecognizer.delegate = self
         self.addGestureRecognizer(gestureRecognizer)
     }
     
-    @objc func clickDeleteButton(_ gestureRecognizer: UIGestureRecognizer ) {
+    @objc func clickTag(_ gestureRecognizer: UIGestureRecognizer ) {
         let tapPoint: CGPoint = gestureRecognizer.location(in: self)
         
         if (removeButtonRect.contains(tapPoint)) {
-            print("delete")
+            print("Clicked remove button")
             delegate?.removeTagButtonClicked(tagView: self)
         }
         else {
-            print("not delete")
+            print("Clicked tag")
         }
     }
 }

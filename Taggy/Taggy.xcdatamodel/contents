@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13533" systemVersion="17B48" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="TGActivity" representedClassName=".TGActivity" syncable="YES">
+        <attribute name="activityAttachment" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="activityDay" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="activityNote" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="tags" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TGTag" inverseName="activities" inverseEntity="TGTag" syncable="YES"/>
+    </entity>
+    <entity name="TGTag" representedClassName=".TGTag" syncable="YES">
+        <attribute name="tagColor" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="tagDefaultValue" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tagDescr" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tagName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tagUnit" optional="YES" attributeType="UUID" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="tagValue" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="activities" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TGActivity" inverseName="tags" inverseEntity="TGActivity" syncable="YES"/>
+        <relationship name="units" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TGUnit" inverseName="tags" inverseEntity="TGUnit" syncable="YES"/>
+    </entity>
+    <entity name="TGUnit" representedClassName=".TGUnit" syncable="YES">
+        <attribute name="unitName" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="tags" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TGTag" inverseName="units" inverseEntity="TGTag" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="TGActivity" positionX="-54" positionY="-9" width="128" height="105"/>
+        <element name="TGTag" positionX="-63" positionY="-18" width="128" height="165"/>
+        <element name="TGUnit" positionX="-36" positionY="27" width="128" height="75"/>
+    </elements>
+</model>
