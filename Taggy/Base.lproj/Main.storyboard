@@ -55,6 +55,9 @@
                                 <rect key="frame" x="10" y="250" width="34" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Save"/>
+                                <connections>
+                                    <action selector="saveButtonClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="uLC-rA-TeF"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0bv-Bt-s1O">
                                 <rect key="frame" x="19" y="551" width="113" height="30"/>
@@ -67,6 +70,9 @@
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <action selector="startDataSelect:" destination="BYZ-38-t0r" eventType="editingDidBegin" id="mmB-Mc-XjM"/>
+                                </connections>
                             </textField>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -74,6 +80,7 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="New" id="K4n-T5-MMi"/>
                     <connections>
+                        <outlet property="currentDate" destination="Dbi-if-uTd" id="pwz-pO-8Gk"/>
                         <outlet property="tagList" destination="ec5-T0-gQi" id="fLW-GR-pWc"/>
                         <outlet property="tagName" destination="Xhp-mz-T6J" id="Cmv-go-V4t"/>
                         <outlet property="tagUnit" destination="BuW-2k-uPV" id="QBx-TO-iY0"/>

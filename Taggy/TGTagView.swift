@@ -10,7 +10,7 @@ import UIKit
 import QuartzCore
 import CoreText
 
-protocol RemoveTagDelegate {
+protocol TagClickedDelegate {
     func removeTagButtonClicked(tagView: TGTagView) -> Void
 }
 
@@ -19,7 +19,7 @@ protocol RemoveTagDelegate {
     private var removeButtonSize: CGFloat = CGFloat()
     private var removeButtonRect: CGRect = CGRect()
     
-    var delegate: RemoveTagDelegate?
+    var delegate: TagClickedDelegate?
     
     @IBInspectable public var tagName: String = "Tag" {
         didSet {
@@ -196,10 +196,10 @@ protocol RemoveTagDelegate {
                                      width: getTagValueWidth(),
                                      height: self.frame.height - controlsMargin * 2)
             
-            let bpath:UIBezierPath = UIBezierPath(rect: tagNameRect)
-            
-            UIColor.yellow.set()
-            bpath.stroke()
+//            let bpath:UIBezierPath = UIBezierPath(rect: tagNameRect)
+//
+//            UIColor.yellow.set()
+//            bpath.stroke()
             
             drawTagName(rect: tagNameRect, context: context)
             drawTagValue(rect: tagValueRect, context: context)

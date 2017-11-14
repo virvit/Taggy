@@ -2,7 +2,7 @@
 //  TGActivity+CoreDataClass.swift
 //  Taggy
 //
-//  Created by VirVit on 13/11/2017.
+//  Created by VirVit on 11/14/17.
 //  Copyright © 2017 VirVit. All rights reserved.
 //
 //
