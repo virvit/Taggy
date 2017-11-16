@@ -127,4 +127,19 @@ import UIKit
         rearrangeViews()
         invalidateIntrinsicContentSize()
     }
+    
+    open func removeAllTags() {
+        
+        for v in tagViews as [TGTagView] {
+            v.removeFromSuperview()
+        }
+        
+        rowViews.removeAll(keepingCapacity: true)
+
+        arrayOfTags = []
+        tagViews = []
+        rowViews = []
+        
+        rearrangeViews()
+    }
 }

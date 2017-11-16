@@ -12,6 +12,7 @@ import CoreText
 
 protocol TagClickedDelegate {
     func removeTagButtonClicked(tagView: TGTagView) -> Void
+    func tagSelected(tagView: TGTagView) -> Void
 }
 
 @IBDesignable open class TGTagView: UIButton, UIGestureRecognizerDelegate
@@ -92,10 +93,19 @@ protocol TagClickedDelegate {
         let clipPath: CGPath = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius).cgPath
         
         context.addPath(clipPath)
-        context.setFillColor(UIColor(red: CGFloat(57.0/255.0),
-                                     green: CGFloat(181.0/255.0),
-                                     blue: CGFloat(74.0/255.0),
-                                     alpha: 1.0).cgColor)
+        
+        if isSelected {
+            context.setFillColor(UIColor(red: CGFloat(7.0/255.0),
+                                         green: CGFloat(18.0/255.0),
+                                         blue: CGFloat(50.0/255.0),
+                                         alpha: 1.0).cgColor)
+        }
+        else {
+            context.setFillColor(UIColor(red: CGFloat(57.0/255.0),
+                                         green: CGFloat(181.0/255.0),
+                                         blue: CGFloat(74.0/255.0),
+                                         alpha: 1.0).cgColor)
+        }
         context.closePath()
         context.fillPath()
 
@@ -292,11 +302,11 @@ protocol TagClickedDelegate {
         let tapPoint: CGPoint = gestureRecognizer.location(in: self)
         
         if (removeButtonRect.contains(tapPoint)) {
-            print("Clicked remove button")
             delegate?.removeTagButtonClicked(tagView: self)
         }
         else {
-            print("Clicked tag")
+            isSelected = !isSelected
+            delegate?.tagSelected(tagView: self)
         }
     }
 }

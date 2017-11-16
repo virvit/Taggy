@@ -19,7 +19,7 @@ extension TGTag {
 
     @NSManaged public var tagColor: NSObject?
     @NSManaged public var tagDefaultValue: String?
-    @NSManaged public var tagDescr: String?
+    @NSManaged public var tagDescr: NSAttributedString?
     @NSManaged public var tagName: String?
     @NSManaged public var tagUnit: UUID?
     @NSManaged public var tagValue: String?

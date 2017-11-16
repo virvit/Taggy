@@ -9,7 +9,7 @@
     <entity name="TGTag" representedClassName=".TGTag" syncable="YES">
         <attribute name="tagColor" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="tagDefaultValue" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="tagDescr" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tagDescr" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="tagName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tagUnit" optional="YES" attributeType="UUID" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="tagValue" optional="YES" attributeType="String" syncable="YES"/>

@@ -18,30 +18,50 @@ class TGNewActivityViewController:    UIViewController,
     let moc = (UIApplication.shared.delegate as! AppDelegate).getContext
     
     weak var currentActivity: TGActivity?
+    weak var selectedTag: TGTag?
 
     @IBOutlet weak var tagUnit: UITextField!
     @IBOutlet weak var tagValue: UITextField!
+    @IBOutlet weak var tagDescr: UITextView!
     
     @IBOutlet weak var tagList: TGTagListView!
     
     @IBOutlet weak var tagName: UITextField!
     @IBOutlet weak var currentDate: UITextField!
 
-    @IBAction func saveButtonClicked(_ sender: UIButton) {
-        do {
-            try moc.save()
-        } catch _ {
-            print("Something went wrong during saving to database")
-        }
+    private func getDateFormatter() -> ISO8601DateFormatter {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = .withFullDate
+        return formatter
     }
+    
+    @IBAction func clickPreviousDate(_ sender: UIButton) {
+        let dateFormatter = getDateFormatter()
+        let selectedDate: Date = dateFormatter.date(from: self.currentDate.text!) as Date!
+        self.currentDate.text = dateFormatter.string(from: selectedDate.prevDay)
+        
+        appDelegate.saveContext()
+        loadTagsFromDatabase()
+    }
+    
+    @IBAction func clickNextDate(_ sender: UIButton) {
+        let dateFormatter = self.getDateFormatter()
+        let selectedDate: Date = dateFormatter.date(from: self.currentDate.text!) as Date!
+        self.currentDate.text = dateFormatter.string(from: selectedDate.nextDay)
+        appDelegate.saveContext()
+        loadTagsFromDatabase()
+    }
+    
+    @IBAction func saveButtonClicked(_ sender: UIButton) {
+        appDelegate.saveContext()
+    }
+    
     @IBAction func startDataSelect(_ sender: UITextField) {
         let picker = DateTimePicker.show()
         picker.highlightColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
         picker.isDatePickerOnly = true // to hide time and show only date picker
         picker.completionHandler = { date in
-            
-            let formatter = DateFormatter()
-            formatter.dateFormat = "dd/MM/YYYY"
+            let formatter = self.getDateFormatter()
             self.currentDate.text = formatter.string(from: date)
         }
     }
@@ -50,7 +70,6 @@ class TGNewActivityViewController:    UIViewController,
         let newTagView = TGTagView()
         let newTag = NSEntityDescription.insertNewObject(forEntityName: "TGTag",
                                                          into: moc) as! TGTag
-
 
         if (tagName.text == "") {
             // Show error FIXME
@@ -76,16 +95,14 @@ class TGNewActivityViewController:    UIViewController,
             // FIXME add reference to TGUnits
         }
 
+        newTag.setValue(tagDescr.attributedText, forKey: "tagDescr")
+
         // FIXME Look for default tag with the same name to inherit appearance
         newTagView.delegate = self
         tagList.addTagView(tag: newTagView)
         
-        do {
-            newTag.addToActivities(currentActivity!)
-            try moc.save()
-        } catch _ {
-            print("Something went wrong during saving tag to database")
-        }
+        newTag.addToActivities(currentActivity!)
+        appDelegate.saveContext()
         
         // Clear fields for a new tag
         tagName.text = ""
@@ -93,18 +110,25 @@ class TGNewActivityViewController:    UIViewController,
         tagUnit.text = ""
     }
     
+    // Delegate
+    
     func removeTagButtonClicked(tagView: TGTagView) {
         // FIXME Remove tag from database
         tagList.removeTag(tagView: tagView)
+        appDelegate.saveContext()
     }
 
+    func tagSelected(tagView: TGTagView) {
+        // FIXME
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view, typically from a nib.
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd/MM/YYYY"
+        let dateFormatter = self.getDateFormatter()
         self.currentDate.text = dateFormatter.string(from: Date())
+        // FIXME sets incorrect date when it's almost night time
         
         loadTagsFromDatabase()
     }
@@ -118,34 +142,29 @@ class TGNewActivityViewController:    UIViewController,
         // Steps
         // Find current day activity and load tags
         // If there is no activity for specified date, create a new activity
+        self.tagList.removeAllTags()
         
         // Initialize Fetch Request
-//        let tagsFetchRequest = NSFetchRequest<NSFetchRequestResult>()
         let activityFetchRequest = NSFetchRequest<NSFetchRequestResult>()
        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd/MM/YYYY"
-        let currentDateAsDate = dateFormatter.date(from: self.currentDate.text!)
-        activityFetchRequest.predicate = NSPredicate(format: "(activityDate == %@)",
-                                                     currentDateAsDate as! NSDate)
+        let dateFormatter = getDateFormatter()
+        let currentDateAsDate = dateFormatter.date(from: self.currentDate.text!) as Date!
         
-//        let tagNameSort = NSSortDescriptor(key: "tagName", ascending: true)
-//        tagsFetchRequest.sortDescriptors = [tagNameSort]
-        
+        activityFetchRequest.predicate = NSPredicate(format: "(activityDate >= %@) AND (activityDate <= %@)",
+                                                     currentDateAsDate?.startOfDay as! NSDate,
+                                                     currentDateAsDate?.endOfDay as! NSDate)
+
         // Create Entity Description
         let activityEntityDescription = NSEntityDescription.entity(forEntityName: "TGActivity", in: moc)
-//        let tagEntityDescription = NSEntityDescription.entity(forEntityName: "TGTag", in: moc)
         
         // Configure Fetch Request
-//        tagsFetchRequest.entity = tagEntityDescription
         activityFetchRequest.entity = activityEntityDescription
         
         do {
             self.currentActivity = try moc.fetch(activityFetchRequest).first as! TGActivity!
 
             if currentActivity != nil {
-                let tagListResult = currentActivity?.tags
-                //let tagListResult = try moc.fetch(tagsFetchRequest)
+                let tagListResult = currentActivity?.tags?.allObjects
                 
                 for case let tag as TGTag in tagListResult! {
                     let newTagView = TGTagView()
@@ -156,19 +175,18 @@ class TGNewActivityViewController:    UIViewController,
                         newTagView.tagValue = tag.tagValue!
                     }
                     
-                    print(tag.tagName, " - ", tag.tagValue)
+                    //print(tag.tagName!, " - ", tag.tagValue ?? "")
                     newTagView.delegate = self
                     tagList.addTagView(tag: newTagView)
                 }
             }
             else {
                 // Create empty activity
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "dd/MM/YYYY"
+                let dateFormatter = getDateFormatter()
                 let currentDateAsDate = dateFormatter.date(from: self.currentDate.text!)
 
-                currentActivity = NSEntityDescription.insertNewObject(forEntityName: "TGActivity",
-                                                                      into: moc) as! TGActivity
+                currentActivity = (NSEntityDescription.insertNewObject(forEntityName: "TGActivity",
+                                                                       into: moc) as! TGActivity)
                 currentActivity!.setValue(currentDateAsDate, forKey: "activityDate")
                 moc.insert(currentActivity!)
             }

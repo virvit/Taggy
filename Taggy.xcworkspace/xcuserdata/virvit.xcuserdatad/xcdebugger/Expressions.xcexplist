@@ -3,10 +3,43 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "TGActivitiesViewController.tableView(_:titleForHeaderInSection:):TGActivitiesViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "arrayOfActivities[section].activityDate">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TGNewActivityViewController.clickNextDate(_:):TGNewActivityViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.currentDate.text">
+            </PersistentString>
+            <PersistentString
+               value = "dateFormatter.date(from: self.currentDate.text!)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TGNewActivityViewController.addtag(_:):TGNewActivityViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "tagDescr.attributedText">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "TGNewActivityViewController.loadTagsFromDatabase():TGNewActivityViewController.swift">
          <PersistentStrings>
             <PersistentString
                value = "self.currentDate.text">
+            </PersistentString>
+            <PersistentString
+               value = "tag.tagValue">
+            </PersistentString>
+            <PersistentString
+               value = "currentActivity.activityDate">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -18,6 +51,34 @@
             </PersistentString>
             <PersistentString
                value = "self.bounds">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TGActivitiesViewController.LoadActivitiesFromDatabase():TGActivitiesViewController.swift">
+      </ContextState>
+      <ContextState
+         contextName = "TGActivitiesViewController.tableView(_:cellForRowAt:):TGActivitiesViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "(arrayOfActivities[indexPath.section].tags?.allObjects[indexPath.row] as! TGTag).tagName">
+            </PersistentString>
+            <PersistentString
+               value = "arrayOfActivities[indexPath.section].tags?.allObjects[indexPath.row] as! TGTag">
+            </PersistentString>
+            <PersistentString
+               value = "indexPath.section">
+            </PersistentString>
+            <PersistentString
+               value = "indexPath.row">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TGActivitiesViewController.tableView(_:numberOfRowsInSection:):TGActivitiesViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "arrayOfActivities[section].tags?.count">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
