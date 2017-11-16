@@ -101,19 +101,24 @@ protocol TagClickedDelegate {
                                          alpha: 1.0).cgColor)
         }
         else {
-            context.setFillColor(UIColor(red: CGFloat(57.0/255.0),
-                                         green: CGFloat(181.0/255.0),
-                                         blue: CGFloat(74.0/255.0),
-                                         alpha: 1.0).cgColor)
+//            context.setFillColor(UIColor(red: CGFloat(57.0/255.0),
+//                                         green: CGFloat(181.0/255.0),
+//                                         blue: CGFloat(74.0/255.0),
+//                                         alpha: 1.0).cgColor)
+            context.setFillColor(UIColor.white.cgColor)
+            UIColor.black.setStroke()
+            
+
         }
         context.closePath()
         context.fillPath()
+        UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius).stroke()
 
     }
     
     private func drawTagName(rect: CGRect, context: CGContext) {
         let aStringParams: [NSAttributedStringKey: Any] = [
-            NSAttributedStringKey.foregroundColor: UIColor.white,
+            NSAttributedStringKey.foregroundColor: UIColor.black,
             NSAttributedStringKey.font: tagNameFont
         ]
         

@@ -17,8 +17,8 @@ class TGNewActivityViewController:    UIViewController,
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     let moc = (UIApplication.shared.delegate as! AppDelegate).getContext
     
-    weak var currentActivity: TGActivity?
-    weak var selectedTag: TGTag?
+    var currentActivity: TGActivity?
+    var selectedTag: TGTag?
 
     @IBOutlet weak var tagUnit: UITextField!
     @IBOutlet weak var tagValue: UITextField!
@@ -48,6 +48,7 @@ class TGNewActivityViewController:    UIViewController,
         let dateFormatter = self.getDateFormatter()
         let selectedDate: Date = dateFormatter.date(from: self.currentDate.text!) as Date!
         self.currentDate.text = dateFormatter.string(from: selectedDate.nextDay)
+        
         appDelegate.saveContext()
         loadTagsFromDatabase()
     }
@@ -63,6 +64,9 @@ class TGNewActivityViewController:    UIViewController,
         picker.completionHandler = { date in
             let formatter = self.getDateFormatter()
             self.currentDate.text = formatter.string(from: date)
+            
+            self.appDelegate.saveContext()
+            self.loadTagsFromDatabase()
         }
     }
     
@@ -101,7 +105,7 @@ class TGNewActivityViewController:    UIViewController,
         newTagView.delegate = self
         tagList.addTagView(tag: newTagView)
         
-        newTag.addToActivities(currentActivity!)
+        newTag.addToActivities(self.currentActivity!)
         appDelegate.saveContext()
         
         // Clear fields for a new tag
@@ -163,13 +167,16 @@ class TGNewActivityViewController:    UIViewController,
         do {
             self.currentActivity = try moc.fetch(activityFetchRequest).first as! TGActivity!
 
-            if currentActivity != nil {
-                let tagListResult = currentActivity?.tags?.allObjects
+            if self.currentActivity != nil {
+                print("Activity for ", self.currentDate.text!, " found in database")
+                let tagListResult = self.currentActivity?.tags?.allObjects
                 
                 for case let tag as TGTag in tagListResult! {
                     let newTagView = TGTagView()
                     
-                    newTagView.tagName = tag.tagName!
+                    if tag.tagName != nil {
+                        newTagView.tagName = tag.tagName!
+                    }
                     
                     if tag.tagValue != nil {
                         newTagView.tagValue = tag.tagValue!
@@ -182,13 +189,11 @@ class TGNewActivityViewController:    UIViewController,
             }
             else {
                 // Create empty activity
-                let dateFormatter = getDateFormatter()
-                let currentDateAsDate = dateFormatter.date(from: self.currentDate.text!)
-
-                currentActivity = (NSEntityDescription.insertNewObject(forEntityName: "TGActivity",
+                print("No Activity found for ", self.currentDate.text!, " in database")
+                self.currentActivity = (NSEntityDescription.insertNewObject(forEntityName: "TGActivity",
                                                                        into: moc) as! TGActivity)
-                currentActivity!.setValue(currentDateAsDate, forKey: "activityDate")
-                moc.insert(currentActivity!)
+                self.currentActivity!.setValue(currentDateAsDate, forKey: "activityDate")
+                //moc.insert(self.currentActivity!)
             }
             
         } catch {
@@ -198,18 +203,4 @@ class TGNewActivityViewController:    UIViewController,
         
     }
     
-//    func addNewSpecialityButtonPressed(_ sender: DoctorSpecialityTableViewCell) {
-//        // Cell is responsible to make speciality name editable
-//        // We are responsible to create a new record next to the current
-//
-//        let newSpeciality = NSEntityDescription.insertNewObject(forEntityName: "Speciality",
-//                                                                into: moc) as! Speciality
-//
-//        newSpeciality.setValue("New", forKey: "specialityName")
-//
-//        specialitiesArray.append(newSpeciality)
-//
-//        doctorSpecialities.reloadData()
-//
-//    }
 }

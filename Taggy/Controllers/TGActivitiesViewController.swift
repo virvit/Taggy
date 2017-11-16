@@ -32,14 +32,16 @@ UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let tagListView = TGTagListView()
+        let tagListView = TGTagListView(frame: cell.bounds)
         
         let tagListResult = arrayOfActivities[indexPath.section].tags?.allObjects
         
         for case let tag as TGTag in tagListResult! {
             let newTagView = TGTagView()
             
-            newTagView.tagName = tag.tagName!
+            if tag.tagName != nil {
+                newTagView.tagName = tag.tagName!
+            }
             
             if tag.tagValue != nil {
                 newTagView.tagValue = tag.tagValue!

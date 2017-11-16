@@ -108,9 +108,7 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="New" id="HHu-x0-0b8">
-                        <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="-18"/>
-                    </tabBarItem>
+                    <tabBarItem key="tabBarItem" title="New" id="HHu-x0-0b8"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="currentDate" destination="Dbi-if-uTd" id="pwz-pO-8Gk"/>
@@ -152,11 +150,8 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="UvV-hH-0hA"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Activities" id="7BL-4T-7Jf">
-                        <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="-18"/>
-                    </tabBarItem>
+                    <tabBarItem key="tabBarItem" title="Activities" id="7BL-4T-7Jf"/>
                     <connections>
-                        <outlet property="aaa" destination="DJv-08-mfA" id="0gk-Q3-0YE"/>
                         <outlet property="activityHistoryView" destination="DJv-08-mfA" id="q1T-US-Mo9"/>
                     </connections>
                 </viewController>

@@ -21,9 +21,8 @@ extension TGActivity {
     @NSManaged public var activityDate: NSDate?
     @NSManaged public var activityNote: String?
     @NSManaged public var tags: NSSet?
-
 }
-
+    
 // MARK: Generated accessors for tags
 extension TGActivity {
 

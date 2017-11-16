@@ -3,10 +3,10 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "TGActivitiesViewController.tableView(_:titleForHeaderInSection:):TGActivitiesViewController.swift">
+         contextName = "TGActivitiesViewController.tableView(_:numberOfRowsInSection:):TGActivitiesViewController.swift">
          <PersistentStrings>
             <PersistentString
-               value = "arrayOfActivities[section].activityDate">
+               value = "arrayOfActivities[section].tags?.count">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -27,6 +27,20 @@
             <PersistentString
                value = "tagDescr.attributedText">
             </PersistentString>
+            <PersistentString
+               value = "currentActivity">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TGNewActivityViewController.clickPreviousDate(_:):TGNewActivityViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.currentDate.text">
+            </PersistentString>
+            <PersistentString
+               value = "currentActivity">
+            </PersistentString>
          </PersistentStrings>
       </ContextState>
       <ContextState
@@ -37,6 +51,9 @@
             </PersistentString>
             <PersistentString
                value = "tag.tagValue">
+            </PersistentString>
+            <PersistentString
+               value = "tag.tagName">
             </PersistentString>
             <PersistentString
                value = "currentActivity.activityDate">
@@ -75,10 +92,10 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "TGActivitiesViewController.tableView(_:numberOfRowsInSection:):TGActivitiesViewController.swift">
+         contextName = "TGActivitiesViewController.tableView(_:titleForHeaderInSection:):TGActivitiesViewController.swift">
          <PersistentStrings>
             <PersistentString
-               value = "arrayOfActivities[section].tags?.count">
+               value = "arrayOfActivities[section].activityDate">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
