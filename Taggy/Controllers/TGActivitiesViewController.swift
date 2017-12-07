@@ -9,6 +9,8 @@
 import UIKit
 import CoreData
 
+// TODO Search
+// TODO Filter
 class TGActivitiesViewController: UIViewController,
 UITableViewDataSource, UITableViewDelegate {
     
@@ -65,7 +67,7 @@ UITableViewDataSource, UITableViewDelegate {
         df.dateFormat = "dd-MM-YYYY"
         
         // return "Section " + String(section) + " " + df.string(from: arrayOfDates[section])
-        return df.string(from: arrayOfActivities[section].activityDate as! Date)
+        return df.string(from: arrayOfActivities[section].activityDate as Date!)
     }
     
     //    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

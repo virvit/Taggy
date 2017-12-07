@@ -9,6 +9,7 @@
 import UIKit
 import QuartzCore
 import CoreText
+import CoreData
 
 protocol TagClickedDelegate {
     func removeTagButtonClicked(tagView: TGTagView) -> Void
@@ -19,6 +20,7 @@ protocol TagClickedDelegate {
 {
     private var removeButtonSize: CGFloat = CGFloat()
     private var removeButtonRect: CGRect = CGRect()
+    var tagId: NSManagedObjectID = NSManagedObjectID()
     
     var delegate: TagClickedDelegate?
     
