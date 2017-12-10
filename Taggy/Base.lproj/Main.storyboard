@@ -112,7 +112,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <connections>
-                                    <segue destination="0Qj-dA-F4A" kind="presentation" id="4H5-o4-5Ol"/>
+                                    <segue destination="0Qj-dA-F4A" kind="presentation" identifier="CopyTagsSegue" id="4H5-o4-5Ol"/>
                                 </connections>
                             </button>
                         </subviews>

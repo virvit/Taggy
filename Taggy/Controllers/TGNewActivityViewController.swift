@@ -13,7 +13,8 @@ import DateTimePicker
 // TODO Extend copy button with new modal view and options:
 // FRom date, Last Used, Sets, Most Popular + copy values checkbox
 class TGNewActivityViewController:    UIViewController,
-    TagClickedDelegate
+    TagClickedDelegate,
+    TGCopyTagsDelegate
 {
     
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -280,4 +281,27 @@ class TGNewActivityViewController:    UIViewController,
         
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "CopyTagsSegue" {
+            let vc = segue.destination as! TGTagsCopyViewController
+            vc.delegate = self
+        }
+    }
+    
+    func addTagsAsACopy(tags: [TGTag]) {
+        for tag  in tags {
+            let newTagView = TGTagView()
+            
+            if tag.tagName != nil {
+                newTagView.tagName = tag.tagName!
+            }
+            
+            if tag.tagValue != nil {
+                newTagView.tagValue = tag.tagValue!
+            }
+            
+            newTagView.delegate = self
+            tagList.addTagView(tag: newTagView)
+        }
+    }
 }

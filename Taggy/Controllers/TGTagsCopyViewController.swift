@@ -10,9 +10,14 @@ import UIKit
 import CoreData
 import DateTimePicker
 
+protocol TGCopyTagsDelegate {
+    func addTagsAsACopy(tags: [TGTag]) -> Void
+}
+
 // FIXME to do this
 class TGTagsCopyViewController: UIViewController {
     var currentActivity: TGActivity?
+    var delegate: TGCopyTagsDelegate?
 
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     let moc = (UIApplication.shared.delegate as! AppDelegate).getContext
@@ -29,15 +34,18 @@ class TGTagsCopyViewController: UIViewController {
     // Recently used tags are 10 uniq tags used before today
     @IBAction func recentlyUsedClicked(_ sender: Any) {
         // Copy tags
+        let recentTags = TGTagManager.GetRecentlyUsedTags()
+        self.delegate?.addTagsAsACopy(tags: recentTags)
         self.dismiss(animated: true, completion: nil)
     }
     
     // Popular tags are 10 tags mostly used
     @IBAction func popularClicked(_ sender: Any) {
         // Copy tags
+        let popularTags = TGTagManager.GetMostPopularTags()
+        self.delegate?.addTagsAsACopy(tags: popularTags)
         self.dismiss(animated: true, completion: nil)
     }
-
     
     @IBAction func copyTagsFromOtherDate(_ sender: UIButton) {
         let picker = DateTimePicker.show()
