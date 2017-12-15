@@ -13,7 +13,7 @@ import DateTimePicker
 // TODO Extend copy button with new modal view and options:
 // FRom date, Last Used, Sets, Most Popular + copy values checkbox
 class TGNewActivityViewController:    UIViewController,
-    TagClickedDelegate,
+    TGTagClickedDelegate,
     TGCopyTagsDelegate
 {
     
@@ -21,7 +21,6 @@ class TGNewActivityViewController:    UIViewController,
     let moc = (UIApplication.shared.delegate as! AppDelegate).getContext
     
     var currentActivity: TGActivity?
-    //var selectedTag: TGTag?
 
     @IBOutlet weak var tagUnit: UITextField!
     @IBOutlet weak var tagValue: UITextField!
@@ -34,7 +33,7 @@ class TGNewActivityViewController:    UIViewController,
 
     @IBAction func copyTagsFromOtherDate(_ sender: UIButton) {
         let picker = DateTimePicker.show()
-        let formatter = self.getDateFormatter()
+        let formatter = TGDateUtils.getDateFormatter()
         let selectedDate = formatter.date(from: self.currentDate.text!) as Date?
         
         picker.selectedDate = selectedDate!.prevDay
@@ -49,6 +48,7 @@ class TGNewActivityViewController:    UIViewController,
     }
     
     func copyTagsFromDate(dateFromCopy: Date) {
+        // TODO Move to TGTagManager
         // Initialize Fetch Request
         let activityFetchRequest = NSFetchRequest<NSFetchRequestResult>()
         
@@ -89,14 +89,8 @@ class TGNewActivityViewController:    UIViewController,
         }
     }
     
-    private func getDateFormatter() -> ISO8601DateFormatter {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = .withFullDate
-        return formatter
-    }
-    
     @IBAction func clickPreviousDate(_ sender: UIButton) {
-        let dateFormatter = getDateFormatter()
+        let dateFormatter = TGDateUtils.getDateFormatter()
         let selectedDate: Date = dateFormatter.date(from: self.currentDate.text!) as Date!
         self.currentDate.text = dateFormatter.string(from: selectedDate.prevDay)
         
@@ -105,7 +99,7 @@ class TGNewActivityViewController:    UIViewController,
     }
     
     @IBAction func clickNextDate(_ sender: UIButton) {
-        let dateFormatter = self.getDateFormatter()
+        let dateFormatter = TGDateUtils.getDateFormatter()
         let selectedDate: Date = dateFormatter.date(from: self.currentDate.text!) as Date!
         self.currentDate.text = dateFormatter.string(from: selectedDate.nextDay)
         
@@ -123,7 +117,7 @@ class TGNewActivityViewController:    UIViewController,
         picker.highlightColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
         picker.isDatePickerOnly = true // to hide time and show only date picker
         picker.completionHandler = { date in
-            let formatter = self.getDateFormatter()
+            let formatter = TGDateUtils.getDateFormatter()
             self.currentDate.text = formatter.string(from: date)
             
             self.appDelegate.saveContext()
@@ -131,54 +125,35 @@ class TGNewActivityViewController:    UIViewController,
         }
     }
     
-    @IBAction func addtag(_ sender: UIButton) {
-        let newTagView = TGTagView()
-        let newTag = NSEntityDescription.insertNewObject(forEntityName: "TGTag",
-                                                         into: moc) as! TGTag
-
-        if (tagName.text == "") {
-            // Show error FIXME
-        }
-        else {
-            newTagView.tagName = tagName.text!
-            newTag.setValue(tagName.text!, forKey: "tagName")
-        }
-
-        if (tagValue.text == "") {
-            // Show error FIXME
-        }
-        else {
-            newTagView.tagValue = tagValue.text!
-            newTag.setValue(tagValue.text!, forKey: "tagValue")
-        }
-
-        if (tagUnit.text == "") {
-            // Show error FIXME
-        }
-        else {
-            newTagView.tagUnit = tagUnit.text!
-            // FIXME add reference to TGUnits
-        }
-
-        newTagView.tagId = newTag.objectID
-        newTag.setValue(tagDescr.attributedText, forKey: "tagDescr")
-
-        // FIXME Look for default tag with the same name to inherit appearance
-        newTagView.delegate = self
-        tagList.addTagView(tag: newTagView)
-        
-        newTag.addToActivities(self.currentActivity!)
-        appDelegate.saveContext()
-        
+    func initNewTagFields() {
         // Clear fields for a new tag
-        tagName.text = ""
+        tagName.text = "New tag"
         tagValue.text = ""
         tagUnit.text = ""
     }
     
+    @IBAction func addtag(_ sender: UIButton) {
+        let newTag = TGTagManager.addTag(tagName: tagName.text!,
+                                         tagValue: tagValue?.text,
+                                         tagUnit: nil,
+                                         tagDescr: tagDescr?.attributedText)
+
+        let newTagView = tagList.createNewTagView(tagName: tagName.text!,
+                                                  tagValue: tagValue?.text,
+                                                  tagUnit: nil)
+
+        newTagView.tagId = newTag.objectID
+
+        // FIXME Look for default tag with the same name to inherit appearance
+        tagList.addTagView(tag: newTagView)
+        
+        newTag.addToActivities(self.currentActivity!)
+        initNewTagFields()
+    }
+    
     // Delegate
     
-    func removeTagButtonClicked(tagView: TGTagView) {
+    func removeTagButtonClicked(tagView: TGTagView, sender: TGTagListView) {
         let tagId = tagView.tagId
 
         if !tagId.isTemporaryID {
@@ -190,7 +165,7 @@ class TGNewActivityViewController:    UIViewController,
     }
 
     // FIXME Allow only one tag to select
-    func tagSelected(tagView: TGTagView) {
+    func tagSelected(tagView: TGTagView, sender: TGTagListView) {
         let tagId = tagView.tagId
         
         let selectedTag = moc.object(with: tagId)
@@ -206,9 +181,11 @@ class TGNewActivityViewController:    UIViewController,
         super.viewDidLoad()
         
         // Do any additional setup after loading the view, typically from a nib.
-        let dateFormatter = self.getDateFormatter()
+        let dateFormatter = TGDateUtils.getDateFormatter()
         self.currentDate.text = dateFormatter.string(from: Date())
         // FIXME sets incorrect date when it's almost night time
+        
+        tagList.delegate = self
         
         loadTagsFromDatabase()
     }
@@ -218,7 +195,6 @@ class TGNewActivityViewController:    UIViewController,
         // Dispose of any resources that can be recreated.
     }
 
-    
     func loadTagsFromDatabase() {
         // Steps
         // Find current day activity and load tags
@@ -228,7 +204,7 @@ class TGNewActivityViewController:    UIViewController,
         // Initialize Fetch Request
         let activityFetchRequest = NSFetchRequest<NSFetchRequestResult>()
        
-        let dateFormatter = getDateFormatter()
+        let dateFormatter = TGDateUtils.getDateFormatter()
         let currentDateAsDate = dateFormatter.date(from: self.currentDate.text!) as Date!
         
         activityFetchRequest.predicate = NSPredicate(format: "(activityDate >= %@) AND (activityDate <= %@)",
@@ -260,8 +236,6 @@ class TGNewActivityViewController:    UIViewController,
                     }
                     
                     newTagView.tagId = tag.objectID
-                    //print(tag.tagName!, " - ", tag.tagValue ?? "")
-                    newTagView.delegate = self
                     tagList.addTagView(tag: newTagView)
                 }
             }
@@ -300,7 +274,6 @@ class TGNewActivityViewController:    UIViewController,
                 newTagView.tagValue = tag.tagValue!
             }
             
-            newTagView.delegate = self
             tagList.addTagView(tag: newTagView)
         }
     }

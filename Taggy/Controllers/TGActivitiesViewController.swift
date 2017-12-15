@@ -63,6 +63,7 @@ UITableViewDataSource, UITableViewDelegate {
     
     // Setup header for section
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        
         let df = DateFormatter()
         df.dateFormat = "dd-MM-YYYY"
         

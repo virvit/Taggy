@@ -11,7 +11,12 @@ import QuartzCore
 import CoreText
 import CoreData
 
-protocol TagClickedDelegate {
+protocol TGTagClickedDelegate {
+    func removeTagButtonClicked(tagView: TGTagView, sender: TGTagListView) -> Void
+    func tagSelected(tagView: TGTagView, sender: TGTagListView) -> Void
+}
+
+protocol TGTagViewClickedDelegate {
     func removeTagButtonClicked(tagView: TGTagView) -> Void
     func tagSelected(tagView: TGTagView) -> Void
 }
@@ -22,7 +27,7 @@ protocol TagClickedDelegate {
     private var removeButtonRect: CGRect = CGRect()
     var tagId: NSManagedObjectID = NSManagedObjectID()
     
-    var delegate: TagClickedDelegate?
+    var delegate: TGTagViewClickedDelegate?
     
     @IBInspectable public var tagName: String = "Tag" {
         didSet {

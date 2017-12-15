@@ -8,9 +8,11 @@
 
 import UIKit
 
-@IBDesignable open class TGTagListView: UIView {
+@IBDesignable open class TGTagListView: UIView,
+TGTagViewClickedDelegate{
     
     private var arrayOfTags: [TGTagView] = []
+    var delegate: TGTagClickedDelegate?
 
     @IBInspectable public var tagMargin: CGFloat = CGFloat(5) {
         didSet {
@@ -103,7 +105,20 @@ import UIKit
 //        return CGSize(width: frame.width, height: height)
 //    }
     
+    func createNewTagView(tagName: String,
+                          tagValue: String? = nil,
+                          tagUnit: String? = nil) -> TGTagView {
+        let tagView = TGTagView()
+        tagView.tagName = tagName
+        tagView.tagValue = tagValue ?? ""
+        tagView.tagUnit = tagUnit ?? ""
+        
+        return tagView
+    }
+    
     open func addTagView(tag: TGTagView) {
+        tag.delegate = self
+
         arrayOfTags.append(tag)
         
         rearrangeViews()
@@ -141,5 +156,13 @@ import UIKit
         rowViews = []
         
         rearrangeViews()
+    }
+    
+    func removeTagButtonClicked(tagView: TGTagView) {
+        self.delegate?.removeTagButtonClicked(tagView: tagView, sender: self)
+    }
+    
+    func tagSelected(tagView: TGTagView) {
+        self.delegate?.tagSelected(tagView: tagView, sender: self)
     }
 }

@@ -15,7 +15,9 @@ protocol TGCopyTagsDelegate {
 }
 
 // FIXME to do this
-class TGTagsCopyViewController: UIViewController {
+class TGTagsCopyViewController: UIViewController,
+TGTagClickedDelegate{
+    
     var currentActivity: TGActivity?
     var delegate: TGCopyTagsDelegate?
 
@@ -42,14 +44,25 @@ class TGTagsCopyViewController: UIViewController {
     // Popular tags are 10 tags mostly used
     @IBAction func popularClicked(_ sender: Any) {
         // Copy tags
-        let popularTags = TGTagManager.GetMostPopularTags()
-        self.delegate?.addTagsAsACopy(tags: popularTags)
+//        let popularTags = TGTagManager.GetMostPopularTags()
+//        self.delegate?.addTagsAsACopy(tags: popularTags)
         self.dismiss(animated: true, completion: nil)
     }
     
+    @IBAction func startDateSelect(_ sender: UITextField) {
+        // FIXME Glitch with date. In the evening chooses next day
+        let picker = DateTimePicker.show()
+        picker.highlightColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
+        picker.isDatePickerOnly = true // to hide time and show only date picker
+        picker.completionHandler = { date in
+            let formatter = TGDateUtils.getDateFormatter()
+            self.currentDate.text = formatter.string(from: date)
+        }
+    }
+
     @IBAction func copyTagsFromOtherDate(_ sender: UIButton) {
         let picker = DateTimePicker.show()
-        let formatter = self.getDateFormatter()
+        let formatter = TGDateUtils.getDateFormatter()
         let selectedDate = formatter.date(from: self.currentDate.text!) as Date?
         
         picker.selectedDate = selectedDate!.prevDay
@@ -62,6 +75,20 @@ class TGTagsCopyViewController: UIViewController {
         }
     }
     
+    func removeTagButtonClicked(tagView: TGTagView, sender: TGTagListView) {
+        
+        if sender == self.popularTagListView {
+            self.popularTagListView.removeTag(tagView: tagView)
+        }
+        if sender == self.recentlyUsedTagListView {
+            self.recentlyUsedTagListView.removeTag(tagView: tagView)
+        }
+    }
+    
+    func tagSelected(tagView: TGTagView, sender: TGTagListView) {
+        // FIXME
+    }
+
     func copyTagsFromDate(dateFromCopy: Date) {
         // Initialize Fetch Request
         let activityFetchRequest = NSFetchRequest<NSFetchRequestResult>()
@@ -103,20 +130,14 @@ class TGTagsCopyViewController: UIViewController {
         }
     }
     
-    private func getDateFormatter() -> ISO8601DateFormatter {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = .withFullDate
-        return formatter
-    }
-    
     @IBAction func clickPreviousDate(_ sender: UIButton) {
-        let dateFormatter = getDateFormatter()
+        let dateFormatter = TGDateUtils.getDateFormatter()
         let selectedDate: Date = dateFormatter.date(from: self.currentDate.text!) as Date!
         self.currentDate.text = dateFormatter.string(from: selectedDate.prevDay)
     }
     
     @IBAction func clickNextDate(_ sender: UIButton) {
-        let dateFormatter = self.getDateFormatter()
+        let dateFormatter = TGDateUtils.getDateFormatter()
         let selectedDate: Date = dateFormatter.date(from: self.currentDate.text!) as Date!
         self.currentDate.text = dateFormatter.string(from: selectedDate.nextDay)
     }
@@ -127,7 +148,7 @@ class TGTagsCopyViewController: UIViewController {
         picker.highlightColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
         picker.isDatePickerOnly = true // to hide time and show only date picker
         picker.completionHandler = { date in
-            let formatter = self.getDateFormatter()
+            let formatter = TGDateUtils.getDateFormatter()
             self.currentDate.text = formatter.string(from: date)
             
             self.appDelegate.saveContext()
@@ -138,6 +159,37 @@ class TGTagsCopyViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        let dateFormatter = TGDateUtils.getDateFormatter()
+        self.currentDate.text = dateFormatter.string(from: Date())
+
+        popularTagListView.delegate = self
+        recentlyUsedTagListView.delegate = self
+        
+        // Fill view with popular tags
+        let popularTags = TGTagManager.GetMostPopularTagNames()
+        for tagName in popularTags {
+            let newTagView = TGTagView()
+            
+            newTagView.tagName = tagName
+            
+            self.popularTagListView.addTagView(tag: newTagView)
+        }
+        
+        // Fill view with recent tags
+        let recentTags = TGTagManager.GetRecentlyUsedTags()
+        for tag in recentTags {
+            let newTagView = TGTagView()
+            
+            if tag.tagName != nil {
+                newTagView.tagName = tag.tagName!
+            }
+            
+            if tag.tagValue != nil {
+                newTagView.tagValue = tag.tagValue!
+            }
+            
+            self.recentlyUsedTagListView.addTagView(tag: newTagView)
+        }
     }
 
     override func didReceiveMemoryWarning() {
