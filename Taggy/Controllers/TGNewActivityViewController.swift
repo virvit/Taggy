@@ -10,12 +10,9 @@ import UIKit
 import CoreData
 import DateTimePicker
 
-// TODO Extend copy button with new modal view and options:
-// FRom date, Last Used, Sets, Most Popular + copy values checkbox
-class TGNewActivityViewController:    UIViewController,
+class TGNewActivityViewController : UIViewController,
     TGTagClickedDelegate,
-    TGCopyTagsDelegate
-{
+    TGCopyTagsDelegate {
     
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     let moc = (UIApplication.shared.delegate as! AppDelegate).getContext
@@ -41,51 +38,8 @@ class TGNewActivityViewController:    UIViewController,
         picker.highlightColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
         picker.isDatePickerOnly = true // to hide time and show only date picker
         picker.completionHandler = { date in
-            self.copyTagsFromDate(dateFromCopy: selectedDate!)
-            self.appDelegate.saveContext()
+            TGTagManager.copyTagsToActivityFromDate(activityToCopy: self.currentActivity!, dateFrom: selectedDate!)
             self.loadTagsFromDatabase()
-        }
-    }
-    
-    func copyTagsFromDate(dateFromCopy: Date) {
-        // TODO Move to TGTagManager
-        // Initialize Fetch Request
-        let activityFetchRequest = NSFetchRequest<NSFetchRequestResult>()
-        
-        activityFetchRequest.predicate = NSPredicate(format: "(activityDate >= %@) AND (activityDate <= %@)",
-                                                     dateFromCopy.startOfDay as NSDate,
-                                                     dateFromCopy.endOfDay as NSDate)
-        
-        // Create Entity Description
-        let activityEntityDescription = NSEntityDescription.entity(forEntityName: "TGActivity", in: moc)
-        let tagEntityDescription = NSEntityDescription.entity(forEntityName: "TGTag", in: moc)
-        
-        // Configure Fetch Request
-        activityFetchRequest.entity = activityEntityDescription
-        
-        do {
-            let selectedDayActivity = try moc.fetch(activityFetchRequest).first as! TGActivity!
-            
-            if selectedDayActivity != nil {
-                let tagListResult = selectedDayActivity?.tags?.allObjects
-                
-                for case let tag as TGTag in tagListResult! {
-                    
-                    let newTag = NSEntityDescription.insertNewObject(forEntityName: "TGTag",
-                                                                     into: moc) as! TGTag
-                    
-                    let tagProperties = tagEntityDescription?.attributesByName
-                    
-                    for case let tagPropertyName in tagProperties! {
-                        let val = tag.value(forKey: tagPropertyName.key)
-                        newTag.setValue(val, forKey: tagPropertyName.key)
-                    }
-                    newTag.addToActivities(self.currentActivity!)
-                }
-            }
-        } catch {
-            let fetchError = error as NSError
-            NSLog("fetchError: \(fetchError)")
         }
     }
     
@@ -112,15 +66,12 @@ class TGNewActivityViewController:    UIViewController,
     }
     
     @IBAction func startDataSelect(_ sender: UITextField) {
-        // FIXME Glitch with date. In the evening chooses next day
         let picker = DateTimePicker.show()
         picker.highlightColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
         picker.isDatePickerOnly = true // to hide time and show only date picker
         picker.completionHandler = { date in
             let formatter = TGDateUtils.getDateFormatter()
             self.currentDate.text = formatter.string(from: date)
-            
-            self.appDelegate.saveContext()
             self.loadTagsFromDatabase()
         }
     }
@@ -130,6 +81,14 @@ class TGNewActivityViewController:    UIViewController,
         tagName.text = "New tag"
         tagValue.text = ""
         tagUnit.text = ""
+    }
+    
+    // FIXMI add all other fields
+    func initFieldsWithTag(tag: NSManagedObject) {
+        tagName.text = tag.value(forKey: "tagName") as? String
+        tagValue.text = tag.value(forKey: "tagValue") as? String
+        
+        // tagUnit.text =
     }
     
     @IBAction func addtag(_ sender: UIButton) {
@@ -144,7 +103,7 @@ class TGNewActivityViewController:    UIViewController,
 
         newTagView.tagId = newTag.objectID
 
-        // FIXME Look for default tag with the same name to inherit appearance
+        // <TODO: Look for default tag with the same name to inherit appearance>
         tagList.addTagView(tag: newTagView)
         
         newTag.addToActivities(self.currentActivity!)
@@ -170,10 +129,7 @@ class TGNewActivityViewController:    UIViewController,
         
         let selectedTag = moc.object(with: tagId)
         
-        tagName.text = selectedTag.value(forKey: "tagName") as? String
-        tagValue.text = selectedTag.value(forKey: "tagValue") as? String
-        
-        //tagUnit.text =
+        initFieldsWithTag(tag: selectedTag)
 
     }
     
@@ -183,7 +139,6 @@ class TGNewActivityViewController:    UIViewController,
         // Do any additional setup after loading the view, typically from a nib.
         let dateFormatter = TGDateUtils.getDateFormatter()
         self.currentDate.text = dateFormatter.string(from: Date())
-        // FIXME sets incorrect date when it's almost night time
         
         tagList.delegate = self
         
@@ -208,8 +163,8 @@ class TGNewActivityViewController:    UIViewController,
         let currentDateAsDate = dateFormatter.date(from: self.currentDate.text!) as Date!
         
         activityFetchRequest.predicate = NSPredicate(format: "(activityDate >= %@) AND (activityDate <= %@)",
-                                                     currentDateAsDate?.startOfDay as! NSDate,
-                                                     currentDateAsDate?.endOfDay as! NSDate)
+                                                     currentDateAsDate?.startOfDay as CVarArg!,
+                                                     currentDateAsDate?.endOfDay as CVarArg!)
 
         // Create Entity Description
         let activityEntityDescription = NSEntityDescription.entity(forEntityName: "TGActivity", in: moc)
@@ -245,7 +200,7 @@ class TGNewActivityViewController:    UIViewController,
                 self.currentActivity = (NSEntityDescription.insertNewObject(forEntityName: "TGActivity",
                                                                        into: moc) as! TGActivity)
                 self.currentActivity!.setValue(currentDateAsDate, forKey: "activityDate")
-                //moc.insert(self.currentActivity!)
+                // moc.insert(self.currentActivity!)
             }
             
         } catch {
@@ -258,23 +213,14 @@ class TGNewActivityViewController:    UIViewController,
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "CopyTagsSegue" {
             let vc = segue.destination as! TGTagsCopyViewController
+            vc.currentActivity = currentActivity
             vc.delegate = self
         }
     }
     
-    func addTagsAsACopy(tags: [TGTag]) {
-        for tag  in tags {
-            let newTagView = TGTagView()
-            
-            if tag.tagName != nil {
-                newTagView.tagName = tag.tagName!
-            }
-            
-            if tag.tagValue != nil {
-                newTagView.tagValue = tag.tagValue!
-            }
-            
-            tagList.addTagView(tag: newTagView)
-        }
+    func addTagsAsACopy(tagNames: [String]) {
+        TGTagManager.addTagsToActivity(activity: currentActivity!, tagNames: tagNames)
+        loadTagsFromDatabase()
     }
+    
 }

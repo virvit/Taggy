@@ -9,7 +9,7 @@
 import UIKit
 
 @IBDesignable open class TGTagListView: UIView,
-TGTagViewClickedDelegate{
+TGTagViewClickedDelegate {
     
     private var arrayOfTags: [TGTagView] = []
     var delegate: TGTagClickedDelegate?
@@ -31,6 +31,14 @@ TGTagViewClickedDelegate{
         super.layoutSubviews()
         
         rearrangeViews()
+    }
+    
+    func getTagNames() -> [String] {
+        var result: [String] = []
+        arrayOfTags.forEach { (tagView) in
+            result.append(tagView.tagName)
+        }
+        return result
     }
     
     // Keep all views to be able to remove them quickly for redraw
@@ -55,7 +63,7 @@ TGTagViewClickedDelegate{
             let tagHeight: CGFloat = tagView.frame.height
             
             // Add new row
-            if ((occupiedRowSize + tagWidth + tagMargin) > rowMaxSize) {
+            if (occupiedRowSize + tagWidth + tagMargin) > rowMaxSize {
                 // Show current row in view
                 rowView.frame.size.width = rowMaxSize
 
@@ -98,10 +106,10 @@ TGTagViewClickedDelegate{
     }
 
 //    override open var intrinsicContentSize: CGSize {
-////        var height = CGFloat(rows) * (tagViewHeight + marginY)
-////        if rows > 0 {
-////            height -= marginY
-////        }
+//        var height = CGFloat(rows) * (tagViewHeight + marginY)
+//        if rows > 0 {
+//            height -= marginY
+//        }
 //        return CGSize(width: frame.width, height: height)
 //    }
     
@@ -165,4 +173,5 @@ TGTagViewClickedDelegate{
     func tagSelected(tagView: TGTagView) {
         self.delegate?.tagSelected(tagView: tagView, sender: self)
     }
+    
 }

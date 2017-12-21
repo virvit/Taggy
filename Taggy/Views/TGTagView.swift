@@ -21,8 +21,7 @@ protocol TGTagViewClickedDelegate {
     func tagSelected(tagView: TGTagView) -> Void
 }
 
-@IBDesignable open class TGTagView: UIButton, UIGestureRecognizerDelegate
-{
+@IBDesignable open class TGTagView: UIButton, UIGestureRecognizerDelegate {
     private var removeButtonSize: CGFloat = CGFloat()
     private var removeButtonRect: CGRect = CGRect()
     var tagId: NSManagedObjectID = NSManagedObjectID()
@@ -44,7 +43,9 @@ protocol TGTagViewClickedDelegate {
 	}
 
     @IBInspectable public  var tagDescription: String = "" {
-		didSet { setNeedsDisplay() }
+		didSet {
+            setNeedsDisplay()
+        }
 	}
 
     @IBInspectable public var tagValue: String = "" {
@@ -55,11 +56,15 @@ protocol TGTagViewClickedDelegate {
 	}
 
     @IBInspectable public var tagDefaultValue: String = "" {
-		didSet { setNeedsDisplay() }
+		didSet {
+            setNeedsDisplay()
+        }
 	}
 
 	@IBInspectable public var tagColor: UIColor = UIColor.black {
-		didSet { setNeedsDisplay() }
+		didSet {
+            setNeedsDisplay()
+        }
 	}
 
     @IBInspectable public var tagNameFont: UIFont = UIFont(name: "Times New Roman", size: 12)! {
@@ -77,11 +82,15 @@ protocol TGTagViewClickedDelegate {
     }
 
     @IBInspectable public var cornerRadius: CGFloat = 10 {
-        didSet { setNeedsDisplay() }
+        didSet {
+            setNeedsDisplay()
+        }
     }
 
     @IBInspectable public var controlsMargin: CGFloat = 5 {
-        didSet { setNeedsDisplay() }
+        didSet {
+            setNeedsDisplay()
+        }
     }
     
     open override func prepareForInterfaceBuilder() {
@@ -95,7 +104,7 @@ protocol TGTagViewClickedDelegate {
 //        let centerX: CGFloat = (self.frame.width - rect.width) / 2
 //        let centerY: CGFloat = (self.frame.height - rect.height) / 2
 
-        //let rect = CGRect(x: centerX, y: centerY, width: rect.width, height: rect.height)
+        // let rect = CGRect(x: centerX, y: centerY, width: rect.width, height: rect.height)
         
         let clipPath: CGPath = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius).cgPath
         
@@ -149,7 +158,7 @@ protocol TGTagViewClickedDelegate {
         let valueString = NSAttributedString(string: self.tagValue, attributes: aStringParams)
         valueString.draw(at: CGPoint(x: rect.minX, y: yPoint))
         
-        if (tagUnit != "") {
+        if tagUnit != "" {
             yPoint += tagValueFont.pointSize
             let unitString = NSAttributedString(string: tagUnit, attributes: aStringParams)
             unitString.draw(at: CGPoint(x: rect.minX, y: yPoint))
@@ -171,7 +180,7 @@ protocol TGTagViewClickedDelegate {
         // Draw cross lines inside the circle
         let path = UIBezierPath()
         
-        let minusRectWidth:CGFloat = rect.height * 0.2
+        let minusRectWidth: CGFloat = rect.height * 0.2
         path.lineWidth = rect.height * 0.15
         path.lineCapStyle = .round
         
@@ -184,7 +193,7 @@ protocol TGTagViewClickedDelegate {
         path.move(to: CGPoint(x: minusRectFrame.minX + minusRectFrame.width / 2, y: minusRectFrame.minY))
         path.addLine(to: CGPoint(x: minusRectFrame.minX + minusRectFrame.width / 2, y: minusRectFrame.maxY))
         // Horizontal
-        path.move(to: CGPoint(x: minusRectFrame.minX, y: minusRectFrame.minY + minusRectFrame.height / 2 ))
+        path.move(to: CGPoint(x: minusRectFrame.minX, y: minusRectFrame.minY + minusRectFrame.height / 2))
         path.addLine(to: CGPoint(x: minusRectFrame.maxX, y: minusRectFrame.minY + minusRectFrame.height / 2))
         
         UIColor.white.setStroke()
@@ -310,10 +319,10 @@ protocol TGTagViewClickedDelegate {
         self.addGestureRecognizer(gestureRecognizer)
     }
     
-    @objc func clickTag(_ gestureRecognizer: UIGestureRecognizer ) {
+    @objc func clickTag(_ gestureRecognizer: UIGestureRecognizer) {
         let tapPoint: CGPoint = gestureRecognizer.location(in: self)
         
-        if (removeButtonRect.contains(tapPoint)) {
+        if removeButtonRect.contains(tapPoint) {
             delegate?.removeTagButtonClicked(tagView: self)
         }
         else {
@@ -321,4 +330,5 @@ protocol TGTagViewClickedDelegate {
             delegate?.tagSelected(tagView: self)
         }
     }
+    
 }

@@ -3,13 +3,13 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "TGNewActivityViewController.clickPreviousDate(_:):TGNewActivityViewController.swift">
+         contextName = "TGActivitiesViewController.LoadActivitiesFromDatabase():TGActivitiesViewController.swift">
+      </ContextState>
+      <ContextState
+         contextName = "TGTagView.clickTag(_:):TGTagView.swift">
          <PersistentStrings>
             <PersistentString
-               value = "self.currentDate.text">
-            </PersistentString>
-            <PersistentString
-               value = "currentActivity">
+               value = "self.superview">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -21,34 +21,6 @@
             </PersistentString>
             <PersistentString
                value = "dateFormatter.date(from: self.currentDate.text!)">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "TGNewActivityViewController.addtag(_:):TGNewActivityViewController.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "tagDescr.attributedText">
-            </PersistentString>
-            <PersistentString
-               value = "currentActivity">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "TGActivitiesViewController.tableView(_:cellForRowAt:):TGActivitiesViewController.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "(arrayOfActivities[indexPath.section].tags?.allObjects[indexPath.row] as! TGTag).tagName">
-            </PersistentString>
-            <PersistentString
-               value = "arrayOfActivities[indexPath.section].tags?.allObjects[indexPath.row] as! TGTag">
-            </PersistentString>
-            <PersistentString
-               value = "indexPath.section">
-            </PersistentString>
-            <PersistentString
-               value = "indexPath.row">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -70,10 +42,68 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "TGTagView.clickTag(_:):TGTagView.swift">
+         contextName = "TGActivitiesViewController.tableView(_:cellForRowAt:):TGActivitiesViewController.swift">
          <PersistentStrings>
             <PersistentString
-               value = "self.superview">
+               value = "(arrayOfActivities[indexPath.section].tags?.allObjects[indexPath.row] as! TGTag).tagName">
+            </PersistentString>
+            <PersistentString
+               value = "arrayOfActivities[indexPath.section].tags?.allObjects[indexPath.row] as! TGTag">
+            </PersistentString>
+            <PersistentString
+               value = "indexPath.section">
+            </PersistentString>
+            <PersistentString
+               value = "indexPath.row">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TGNewActivityViewController.clickPreviousDate(_:):TGNewActivityViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.currentDate.text">
+            </PersistentString>
+            <PersistentString
+               value = "currentActivity">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TGNewActivityViewController.addtag(_:):TGNewActivityViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "tagDescr.attributedText">
+            </PersistentString>
+            <PersistentString
+               value = "currentActivity">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TGActivitiesViewController.tableView(_:numberOfRowsInSection:):TGActivitiesViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "arrayOfActivities[section].tags?.count">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TGNewActivityViewController.viewDidLoad():TGNewActivityViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.currentDate.text">
+            </PersistentString>
+            <PersistentString
+               value = "Date().description(with: .current)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TGNewActivityViewController.removeTagButtonClicked(tagView:):TGNewActivityViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "tagId.isTemporaryID">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -89,29 +119,10 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "TGNewActivityViewController.removeTagButtonClicked(tagView:):TGNewActivityViewController.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "tagId.isTemporaryID">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
          contextName = "TGActivitiesViewController.tableView(_:titleForHeaderInSection:):TGActivitiesViewController.swift">
          <PersistentStrings>
             <PersistentString
                value = "arrayOfActivities[section].activityDate">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "TGActivitiesViewController.LoadActivitiesFromDatabase():TGActivitiesViewController.swift">
-      </ContextState>
-      <ContextState
-         contextName = "TGActivitiesViewController.tableView(_:numberOfRowsInSection:):TGActivitiesViewController.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "arrayOfActivities[section].tags?.count">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

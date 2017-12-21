@@ -9,20 +9,31 @@
 import UIKit
 import CoreData
 
-// TODO Search
-// TODO Filter
+// <TODO: Search>
+// <TODO: Filter>
 class TGActivitiesViewController: UIViewController,
-UITableViewDataSource, UITableViewDelegate {
+                                    UITableViewDataSource,
+                                    UITableViewDelegate,
+                                    UISearchResultsUpdating,
+                                    UISearchBarDelegate {
     
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    
+    // let appDelegate = UIApplication.shared.delegate as? AppDelegate
     let moc = (UIApplication.shared.delegate as! AppDelegate).getContext
+    
+    let searchController = UISearchController(searchResultsController: nil)
 
     var arrayOfDates: [Date] = []
     var arrayOfActivities: [TGActivity] = []
 
     @IBOutlet weak var activityHistoryView: TGActivityHistory!
     
-    
+
+    func updateSearchResults(for searchController: UISearchController) {
+        let searchBar = searchController.searchBar
+        let selectedScope = searchBar.scopeButtonTitles![searchBar.selectedScopeButtonIndex]
+    }
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return arrayOfActivities.count
     }
@@ -55,7 +66,7 @@ UITableViewDataSource, UITableViewDelegate {
         
         cell.addSubview(tagListView)
         
-        //cell.textLabel?.text = (arrayOfActivities[indexPath.section].tags?.allObjects[indexPath.row] as! TGTag).tagName
+        // cell.textLabel?.text = (arrayOfActivities[indexPath.section].tags?.allObjects[indexPath.row] as! TGTag).tagName
         
         return cell
         
@@ -83,7 +94,17 @@ UITableViewDataSource, UITableViewDelegate {
         self.activityHistoryView.dataSource = self
         
         self.activityHistoryView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        LoadActivitiesFromDatabase()
+        
+        // Add search
+        searchController.searchResultsUpdater = self
+        searchController.dimsBackgroundDuringPresentation = false
+        searchController.searchBar.scopeButtonTitles = ["All", "Name", "Date"]
+        searchController.searchBar.delegate = self
+        definesPresentationContext = true
+        
+        activityHistoryView.tableHeaderView = searchController.searchBar
+        
+        loadActivitiesFromDatabase()
     }
 
     override func didReceiveMemoryWarning() {
@@ -92,7 +113,7 @@ UITableViewDataSource, UITableViewDelegate {
         print("ran out of memory")
     }
     
-    func LoadActivitiesFromDatabase() {
+    func loadActivitiesFromDatabase() {
         // Initialize Fetch Request
         let activityFetchRequest = NSFetchRequest<NSFetchRequestResult>()
         

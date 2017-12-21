@@ -14,6 +14,8 @@ class TGDateUtils {
     static func getDateFormatter() -> ISO8601DateFormatter {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = .withFullDate
+        formatter.timeZone = TimeZone.current
         return formatter
     }
+    
 }

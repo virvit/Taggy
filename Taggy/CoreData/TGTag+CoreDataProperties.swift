@@ -2,7 +2,7 @@
 //  TGTag+CoreDataProperties.swift
 //  Taggy
 //
-//  Created by VirVit on 11/14/17.
+//  Created by VirVit on 21/12/2017.
 //  Copyright © 2017 VirVit. All rights reserved.
 //
 //
@@ -19,10 +19,12 @@ extension TGTag {
 
     @NSManaged public var tagColor: NSObject?
     @NSManaged public var tagDefaultValue: String?
-    @NSManaged public var tagDescr: NSAttributedString?
+    @NSManaged public var tagDescr: NSObject?
     @NSManaged public var tagName: String?
     @NSManaged public var tagUnit: UUID?
     @NSManaged public var tagValue: String?
+    @NSManaged public var createdAt: NSDate?
+    @NSManaged public var updatedAt: NSDate?
     @NSManaged public var activities: NSSet?
     @NSManaged public var units: TGUnit?
 

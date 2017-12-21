@@ -2,7 +2,7 @@
 //  TGActivity+CoreDataProperties.swift
 //  Taggy
 //
-//  Created by VirVit on 11/14/17.
+//  Created by VirVit on 21/12/2017.
 //  Copyright © 2017 VirVit. All rights reserved.
 //
 //
@@ -20,9 +20,12 @@ extension TGActivity {
     @NSManaged public var activityAttachment: NSData?
     @NSManaged public var activityDate: NSDate?
     @NSManaged public var activityNote: String?
+    @NSManaged public var createdAt: NSDate?
+    @NSManaged public var updatedAt: NSDate?
     @NSManaged public var tags: NSSet?
+
 }
-    
+
 // MARK: Generated accessors for tags
 extension TGActivity {
 
