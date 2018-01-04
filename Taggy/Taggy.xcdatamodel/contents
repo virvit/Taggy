@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13772" systemVersion="17C88" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="TGActivity" representedClassName=".TGActivity" syncable="YES">
+    <entity name="TGActivity" representedClassName=".TGActivity" syncable="YES" codeGenerationType="class">
         <attribute name="activityAttachment" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="activityDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="activityNote" optional="YES" attributeType="String" syncable="YES"/>
@@ -8,7 +8,7 @@
         <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TGTag" inverseName="activities" inverseEntity="TGTag" syncable="YES"/>
     </entity>
-    <entity name="TGTag" representedClassName=".TGTag" syncable="YES">
+    <entity name="TGTag" representedClassName=".TGTag" syncable="YES" codeGenerationType="class">
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="tagColor" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="tagDefaultValue" optional="YES" attributeType="String" syncable="YES"/>
@@ -20,7 +20,7 @@
         <relationship name="activities" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TGActivity" inverseName="tags" inverseEntity="TGActivity" syncable="YES"/>
         <relationship name="units" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TGUnit" inverseName="tags" inverseEntity="TGUnit" syncable="YES"/>
     </entity>
-    <entity name="TGUnit" representedClassName=".TGUnit" syncable="YES">
+    <entity name="TGUnit" representedClassName=".TGUnit" syncable="YES" codeGenerationType="class">
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="unitName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>

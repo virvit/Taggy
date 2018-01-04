@@ -14,8 +14,16 @@ TGTagViewClickedDelegate {
     private var arrayOfTags: [TGTagView] = []
     var delegate: TGTagClickedDelegate?
 
+    @IBInspectable public var tagSize: CGFloat = CGFloat(20) {
+        didSet {
+            rearrangeViews()
+            setNeedsDisplay()
+        }
+    }
+    
     @IBInspectable public var tagMargin: CGFloat = CGFloat(5) {
         didSet {
+            rearrangeViews()
             setNeedsDisplay()
         }
     }

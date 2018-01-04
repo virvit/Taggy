@@ -31,4 +31,10 @@ extension Date {
         return Calendar.current.date(byAdding: components, to: self)!
     }
 
+    var tgAsStringShort: String {
+        let df = DateFormatter()
+        df.dateFormat = "dd-MM-YYYY"
+        
+        return df.string(from: self)
+    }
 }

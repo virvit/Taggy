@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 import DateTimePicker
 
-class TGNewActivityViewController : UIViewController,
+class TGNewActivityViewController: UIViewController,
     TGTagClickedDelegate,
     TGCopyTagsDelegate {
     
@@ -103,7 +103,7 @@ class TGNewActivityViewController : UIViewController,
 
         newTagView.tagId = newTag.objectID
 
-        // <TODO: Look for default tag with the same name to inherit appearance>
+        // TODO: Look for default tag with the same name to inherit appearance
         tagList.addTagView(tag: newTagView)
         
         newTag.addToActivities(self.currentActivity!)

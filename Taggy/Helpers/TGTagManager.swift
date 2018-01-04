@@ -83,7 +83,7 @@ public class TGTagManager {
         return newTag
     }
     
-    // <TODO: Implement sorting by count>
+    // TODO: Implement sorting by count
     static func getMostPopularTagNames(count: Int = 10) -> [String] {
         var tagNames: [String] = []
         

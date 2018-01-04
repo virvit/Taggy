@@ -30,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    // <TODO: Implement init data load>
+    // TODO: Implement init data load
     func loadInitData() {
         
     }

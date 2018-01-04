@@ -81,11 +81,11 @@ protocol TGTagViewClickedDelegate {
         }
     }
 
-    @IBInspectable public var cornerRadius: CGFloat = 10 {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
+//    @IBInspectable public var cornerRadius: CGFloat = 10 {
+//        didSet {
+//            setNeedsDisplay()
+//        }
+//    }
 
     @IBInspectable public var controlsMargin: CGFloat = 5 {
         didSet {

@@ -100,7 +100,7 @@ class TGTagsCopyViewController: UIViewController,
     }
     
     func tagSelected(tagView: TGTagView, sender: TGTagListView) {
-        // <TODO: something?>
+        // TODO: something?
     }
 
     override func viewDidLoad() {
